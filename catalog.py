@@ -17,6 +17,8 @@ class CatalogBuilder:
         if not force_refresh:
             cached_albums = self.cache_manager.get_albums()
             if cached_albums:
+                # Buckets may need to be recomputed if logic changed or cache was cleared
+                await self._precompute_buckets(cached_albums)
                 return cached_albums
         
         # Get artist ID
@@ -106,8 +108,11 @@ class CatalogBuilder:
             'all': [album.collection_id for album in albums]
         }
         
+        # Sort by release date so buckets reflect actual appearance order
+        chronological_albums = sorted(albums, key=self._release_sort_key)
+
         # Split albums into thirds for age buckets
-        n = len(albums)
+        n = len(chronological_albums)
         if n > 0:
             third_size = n // 3
             remainder = n % 3
@@ -116,9 +121,9 @@ class CatalogBuilder:
             old_end = third_size + (1 if remainder > 0 else 0)
             medium_end = old_end + third_size + (1 if remainder > 1 else 0)
             
-            old_albums = albums[:old_end]
-            medium_albums = albums[old_end:medium_end]
-            new_albums = albums[medium_end:]
+            old_albums = chronological_albums[:old_end]
+            medium_albums = chronological_albums[old_end:medium_end]
+            new_albums = chronological_albums[medium_end:]
             
             buckets['old'] = [album.collection_id for album in old_albums]
             buckets['medium'] = [album.collection_id for album in medium_albums]
@@ -131,6 +136,15 @@ class CatalogBuilder:
         
         # Cache the buckets
         self.cache_manager.set_buckets(buckets)
+
+    def _release_sort_key(self, album: Album) -> str:
+        """Sort key that prefers precise release dates, then year, defaults newest last"""
+        if album.release_date:
+            return album.release_date
+        if album.year:
+            return f"{album.year:04d}-12-31T23:59:59Z"
+        # Unknown release dates should end up in the 'new' bucket
+        return "9999-12-31T23:59:59Z"
     
     def get_buckets(self) -> Dict[str, List[int]]:
         """Get precomputed buckets"""

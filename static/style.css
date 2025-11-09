@@ -11,6 +11,8 @@ body {
   margin-bottom: 1.25rem;
   width: min(100%, 320px);
   aspect-ratio: 1;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 .album-image {
@@ -20,7 +22,7 @@ body {
   transition: transform 0.3s ease;
 }
 
-.album-image:hover {
+.album-image-wrapper:hover {
   transform: scale(1.05);
 }
 
