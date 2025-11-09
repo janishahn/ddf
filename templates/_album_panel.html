@@ -55,8 +55,9 @@
 </div>
 
 <button
+    id="reroll-button"
     type="button"
-    hx-get="/random?age={{ selected_age or 'all' }}"
+    hx-get="/random"
     hx-target="#album-content"
     hx-swap="innerHTML"
     class="w-full py-3.5 px-6 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 hover:shadow-xl">
@@ -64,12 +65,31 @@
 </button>
 
 <script>
+window.currentAge = "{{ selected_age or 'all' }}";
+const rerollButton = document.getElementById('reroll-button');
+if (rerollButton) {
+    rerollButton.setAttribute('aria-label', `Reroll ${window.currentAge} album`);
+}
+
+document.body.addEventListener('htmx:configRequest', function(event) {
+    if (event.target && event.target.id === 'reroll-button') {
+        event.detail.parameters.age = window.currentAge || 'all';
+    }
+});
+
 function updateSlider(index) {
     const slider = document.querySelector('.sliding-indicator');
     const buttons = document.querySelectorAll('[role="radio"]');
+    const ageBuckets = ['old', 'medium', 'new', 'all'];
     
     if (slider) {
         slider.style.transform = `translateX(${index * 100}%)`;
+    }
+
+    window.currentAge = ageBuckets[index] || 'all';
+    
+    if (rerollButton) {
+        rerollButton.setAttribute('aria-label', `Reroll ${window.currentAge} album`);
     }
     
     buttons.forEach((btn, i) => {
