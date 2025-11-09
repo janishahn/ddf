@@ -1,0 +1,37 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.album-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin-bottom: 1.25rem;
+  width: min(100%, 320px);
+  aspect-ratio: 1;
+}
+
+.album-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.album-image:hover {
+  transform: scale(1.05);
+}
+
+.segmented-control {
+  width: min(100%, 400px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .album-image,
+  button,
+  a {
+    transition: none !important;
+  }
+}

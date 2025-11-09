@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+<div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 max-w-md w-full backdrop-blur-sm bg-opacity-95">
+    {% if error %}
+    <div class="text-red-600 font-semibold mb-4 text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div id="album-panel">
+        {% include "_album_panel.html" %}
+    </div>
+</div>
+</div>
+
+<script>
+    document.addEventListener('keydown', function(e) {
+        if (e.target.getAttribute('role') === 'radio') {
+            const segments = Array.from(document.querySelectorAll('[role="radio"]'));
+            let currentIndex = segments.indexOf(e.target);
+            let newIndex = currentIndex;
+            
+            if (e.key === 'ArrowLeft') {
+                newIndex = currentIndex > 0 ? currentIndex - 1 : segments.length - 1;
+            } else if (e.key === 'ArrowRight') {
+                newIndex = currentIndex < segments.length - 1 ? currentIndex + 1 : 0;
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.target.click();
+            }
+            
+            if (newIndex !== currentIndex) {
+                segments[newIndex].focus();
+            }
+        }
+    });
+</script>
+{% endblock %}
