@@ -30,7 +30,7 @@ A FastAPI application that displays random album covers from the "Die drei ???" 
 
 ```bash
 # Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Run the application
 uvicorn main:app --reload
