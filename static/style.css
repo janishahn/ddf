@@ -30,6 +30,22 @@ body {
   width: min(100%, 400px);
 }
 
+@media (max-width: 640px) {
+  #album-panel {
+    padding-bottom: 5.5rem;
+  }
+
+  .reroll-container {
+    position: fixed;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    max-width: 28rem;
+    z-index: 20;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .album-image,
   button,

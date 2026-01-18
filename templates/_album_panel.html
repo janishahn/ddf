@@ -54,15 +54,17 @@
     </div>
 </div>
 
-<button
-    id="reroll-button"
-    type="button"
-    hx-get="/random"
-    hx-target="#album-content"
-    hx-swap="innerHTML"
-    class="w-full py-3.5 px-6 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 hover:shadow-xl">
-    🎲 Reroll
-</button>
+<div class="reroll-container">
+    <button
+        id="reroll-button"
+        type="button"
+        hx-get="/random"
+        hx-target="#album-content"
+        hx-swap="innerHTML"
+        class="w-full py-3.5 px-6 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 hover:shadow-xl">
+        🎲 Reroll
+    </button>
+</div>
 
 <script>
 window.currentAge = "{{ selected_age or 'all' }}";

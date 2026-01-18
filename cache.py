@@ -19,6 +19,7 @@ class CacheManager:
         self.albums_file = self.cache_dir / "albums.json"
         self.buckets_file = self.cache_dir / "buckets.json"
         self.lengths_file = self.cache_dir / "lengths.json"
+        self.streamable_file = self.cache_dir / "streamable.json"
         self.analytics_file = self.cache_dir / "analytics.json"
         
     def load_cache(self) -> CacheData:
@@ -50,6 +51,11 @@ class CacheManager:
         if self.lengths_file.exists():
             with open(self.lengths_file, 'r') as f:
                 self._cache_data.lengths = json.load(f)
+
+        # Load streamability
+        if self.streamable_file.exists():
+            with open(self.streamable_file, 'r') as f:
+                self._cache_data.streamable = json.load(f)
         
         return self._cache_data
     
@@ -75,6 +81,10 @@ class CacheManager:
         # Save lengths
         with open(self.lengths_file, 'w') as f:
             json.dump(self._cache_data.lengths, f)
+
+        # Save streamability
+        with open(self.streamable_file, 'w') as f:
+            json.dump(self._cache_data.streamable, f)
     
     def get_albums(self) -> list[Album]:
         """Get all albums from cache"""
@@ -123,4 +133,15 @@ class CacheManager:
         """Set runtime for an album in cache"""
         cache = self.load_cache()
         cache.lengths[str(collection_id)] = runtime_millis
+        self.save_cache()
+
+    def get_streamable(self) -> dict:
+        """Get streamability map from cache"""
+        cache = self.load_cache()
+        return cache.streamable
+
+    def set_streamable(self, streamable: dict):
+        """Set streamability map in cache"""
+        cache = self.load_cache()
+        cache.streamable = streamable
         self.save_cache()

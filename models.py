@@ -31,3 +31,4 @@ class CacheData(BaseModel):
     albums: List[Album] = []
     buckets: dict = {}  # Maps 'old', 'medium', 'new', 'all' to lists of collection_ids
     lengths: dict = {}  # Maps collection_id to total runtime in millis
+    streamable: dict = {}  # Maps collection_id to Apple Music streamability

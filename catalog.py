@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Optional
 from models import Album
 from itunes_client import iTunesClient
 from cache import CacheManager
+import asyncio
 import re
 
 
@@ -17,9 +18,12 @@ class CatalogBuilder:
         if not force_refresh:
             cached_albums = self.cache_manager.get_albums()
             if cached_albums:
+                streamable_albums = await self._filter_streamable_albums(cached_albums)
+                if len(streamable_albums) != len(cached_albums):
+                    self.cache_manager.set_albums(streamable_albums)
                 # Buckets may need to be recomputed if logic changed or cache was cleared
-                await self._precompute_buckets(cached_albums)
-                return cached_albums
+                await self._precompute_buckets(streamable_albums)
+                return streamable_albums
         
         # Get artist ID
         artist_id = self.cache_manager.get_artist_id()
@@ -74,8 +78,10 @@ class CatalogBuilder:
 
             search_offset += 200
         
+        streamable_albums = await self._filter_streamable_albums(albums)
+
         # Sort albums by numeric-aware sorting on collectionName
-        sorted_albums = self._numeric_sort_albums(albums)
+        sorted_albums = self._numeric_sort_albums(streamable_albums)
         
         # Cache the albums
         self.cache_manager.set_albums(sorted_albums)
@@ -101,6 +107,39 @@ class CatalogBuilder:
                 return (text, 0, '')
         
         return sorted(albums, key=lambda album: extract_number(album.collection_name.lower()))
+
+    async def _filter_streamable_albums(self, albums: List[Album]) -> List[Album]:
+        streamable_cache = self.cache_manager.get_streamable()
+        missing_albums = [
+            album for album in albums
+            if str(album.collection_id) not in streamable_cache
+        ]
+
+        if missing_albums:
+            semaphore = asyncio.Semaphore(6)
+
+            async def check_album(album: Album):
+                async with semaphore:
+                    track_data = await self.itunes_client.get_tracks_by_album_id(album.collection_id)
+
+                tracks = []
+                if track_data:
+                    tracks = [
+                        result for result in track_data.get('results', [])
+                        if result.get('wrapperType') == 'track'
+                    ]
+
+                streamable_cache[str(album.collection_id)] = any(
+                    track.get('isStreamable') is True for track in tracks
+                )
+
+            await asyncio.gather(*(check_album(album) for album in missing_albums))
+            self.cache_manager.set_streamable(streamable_cache)
+
+        return [
+            album for album in albums
+            if streamable_cache.get(str(album.collection_id))
+        ]
     
     async def _precompute_buckets(self, albums: List[Album]):
         """Precompute age-based buckets: old, medium, new, all"""

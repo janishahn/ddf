@@ -115,6 +115,7 @@ async def get_random_album(request: Request, age: str = "all"):
         }
     )
     set_age_cookie(response, validated_age)
+    response.headers["Cache-Control"] = "no-store"
     analytics_tracker.increment_and_save_sometimes(validated_age, album.collection_id)
     return response
 
@@ -146,6 +147,7 @@ async def select_age(request: Request, age: str = "all"):
         }
     )
     set_age_cookie(response, validated_age)
+    response.headers["Cache-Control"] = "no-store"
     analytics_tracker.increment_and_save_sometimes(validated_age, album.collection_id)
     return response
 
