@@ -23,9 +23,18 @@ class CatalogBuilder:
     def __init__(self, cache_manager: CacheManager, itunes_client: iTunesClient):
         self.cache_manager = cache_manager
         self.itunes_client = itunes_client
+        self._refresh_state = "idle"
+        self._refresh_processed = 0
+        self._refresh_target = 0
+        self._last_album_count = len(self.cache_manager.get_albums())
+        self._refresh_reason = None
 
     async def build_catalog(self, force_refresh: bool = False) -> List[Album]:
         """Build the complete album catalog, using cache if available"""
+        self._refresh_state = "running"
+        self._refresh_processed = 0
+        self._refresh_target = 0
+        self._refresh_reason = None
         today = date.today().isoformat()
         meta = self.cache_manager.get_catalog_meta()
         cached_albums = self.cache_manager.get_albums()
@@ -38,11 +47,14 @@ class CatalogBuilder:
                 and meta["version"] == CATALOG_VERSION
             ):
                 await self._precompute_buckets(cached_albums)
+                self._refresh_state = "idle"
+                self._last_album_count = len(cached_albums)
                 return cached_albums
 
         max_seed = DEFAULT_MAX_EPISODE
         if meta:
             max_seed = max(max_seed, meta["max_episode"])
+        self._refresh_target = max_seed
 
         albums_by_number = await self._fetch_episode_range(1, max_seed)
         max_found = max(albums_by_number, default=0)
@@ -55,6 +67,7 @@ class CatalogBuilder:
                 scan_start + MAX_EPISODE_SCAN_STEP - 1,
                 max_scan_end,
             )
+            self._refresh_target = scan_end
             extra = await self._fetch_episode_range(scan_start, scan_end)
             if not extra:
                 empty_ranges += 1
@@ -69,7 +82,11 @@ class CatalogBuilder:
             if cached_albums:
                 self.cache_manager.set_catalog_meta(today, max_seed, CATALOG_VERSION)
                 await self._precompute_buckets(cached_albums)
+                self._refresh_state = "idle"
+                self._last_album_count = len(cached_albums)
                 return cached_albums
+            self._refresh_state = "error"
+            self._refresh_reason = "empty"
             return []
 
         albums = [albums_by_number[number] for number in sorted(albums_by_number)]
@@ -79,6 +96,8 @@ class CatalogBuilder:
         self.cache_manager.set_catalog_meta(today, max_found, CATALOG_VERSION)
 
         await self._precompute_buckets(sorted_albums)
+        self._refresh_state = "idle"
+        self._last_album_count = len(sorted_albums)
         return sorted_albums
 
     def _numeric_sort_albums(self, albums: List[Album]) -> List[Album]:
@@ -110,6 +129,7 @@ class CatalogBuilder:
                 data = await self.itunes_client.search_albums(term)
                 await asyncio.sleep(SEARCH_PAUSE_SECONDS)
 
+            self._refresh_processed += 1
             if not data:
                 return
 
@@ -185,6 +205,21 @@ class CatalogBuilder:
     def get_buckets(self) -> Dict[str, List[int]]:
         """Get precomputed buckets"""
         return self.cache_manager.get_buckets()
+
+    def get_refresh_status(self) -> dict[str, int | str | None]:
+        """Get catalog refresh status for the UI"""
+        return {
+            "state": self._refresh_state,
+            "processed": self._refresh_processed,
+            "target": self._refresh_target,
+            "last_album_count": self._last_album_count,
+            "reason": self._refresh_reason,
+        }
+
+    def mark_refresh_error(self, reason: str) -> None:
+        """Mark the current refresh as failed"""
+        self._refresh_state = "error"
+        self._refresh_reason = reason
 
     def get_album_by_id(self, collection_id: int) -> Album:
         """Get album by collection ID"""

@@ -170,6 +170,43 @@ async def get_stats():
     return analytics_tracker.get_analytics()
 
 
+@app.get("/admin/refresh/status", response_class=HTMLResponse)
+async def admin_refresh_status():
+    """Get catalog refresh status for the navbar"""
+    status = catalog_builder.get_refresh_status()
+    state = status["state"]
+    count = status["last_album_count"]
+    response_text = ""
+    if state == "running":
+        processed = status["processed"]
+        target = status["target"]
+        if target:
+            response_text = (
+                f"<span class='text-amber-600'>Refreshing · {processed}/{target} · "
+                f"{count} valid albums.</span>"
+            )
+        else:
+            response_text = (
+                f"<span class='text-amber-600'>Refreshing · {processed} checked · "
+                f"{count} valid albums.</span>"
+            )
+    elif state == "error":
+        response_text = (
+            f"<span class='text-red-600'>Refresh failed · {count} valid albums.</span>"
+        )
+    else:
+        if count:
+            response_text = (
+                f"<span class='text-emerald-700'>Ready · {count} valid albums.</span>"
+            )
+        else:
+            response_text = f"<span class='text-gray-500'>Initializing · {count} valid albums.</span>"
+
+    response = HTMLResponse(response_text)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 @app.post("/admin/refresh", response_class=HTMLResponse)
 async def admin_refresh():
     """Force-refresh the catalog and report the current count"""
@@ -193,6 +230,7 @@ async def admin_refresh():
             return
         exc = task.exception()
         if exc:
+            catalog_builder.mark_refresh_error("exception")
             logger.error(
                 "Catalog refresh failed",
                 exc_info=(type(exc), exc, exc.__traceback__),

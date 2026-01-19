@@ -1,20 +1,17 @@
 {% if album %}
-<figure class="flex flex-col items-center mb-6">
+<figure class="flex flex-col items-center mb-2 sm:mb-6">
     <div class="album-image-wrapper">
         <img src="{{ album.artwork_url }}"
              alt="{{ album.collection_name }}"
              class="album-image">
     </div>
-    <figcaption class="text-center space-y-3">
-        <div class="text-base sm:text-lg font-semibold text-gray-800 leading-relaxed">
-            <span class="text-indigo-600 font-medium">{{ album.year }}</span> • {{ album.collection_name }}
-            {% if runtime_str %}
-            • <span class="text-gray-600">{{ runtime_str }}</span>
-            {% endif %}
-        </div>
-        <div class="mt-4">
-            <a href="{{ album.apple_music_url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-200 hover:shadow-lg hover:scale-105">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <figcaption class="text-center w-full px-1">
+        <p class="album-title text-sm sm:text-lg font-semibold text-gray-800 leading-snug sm:leading-relaxed" title="{{ album.collection_name }}">
+            <span class="text-indigo-600 font-medium">{{ album.year }}</span> · {{ album.collection_name }}{% if runtime_str %} · <span class="text-gray-500 text-xs sm:text-base">{{ runtime_str }}</span>{% endif %}
+        </p>
+        <div class="mt-2 sm:mt-4">
+            <a href="{{ album.apple_music_url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 sm:py-2.5 text-sm sm:text-base bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-200 hover:shadow-lg hover:scale-105">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 3.737a.75.75 0 0 0-.914-.544l-8.25 2a.75.75 0 0 0-.586.73v9.513A3.752 3.752 0 0 0 7.5 14.25a3.75 3.75 0 1 0 3.75 3.75V9.771l7.5-1.818v5.047a3.752 3.752 0 0 0-2.25-.75 3.75 3.75 0 1 0 3.75 3.75V4.125a.75.75 0 0 0-.75-.75z"/>
                 </svg>
                 Open in Apple Music

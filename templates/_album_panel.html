@@ -2,70 +2,72 @@
     {% include "_album_fragment.html" %}
 </div>
 
-<div class="w-full flex justify-center mb-6">
-    <div class="segmented-control inline-flex rounded-xl bg-gray-100 p-1.5 shadow-inner relative" role="radiogroup" aria-label="Select age group">
-        <div class="sliding-indicator absolute top-1.5 left-1.5 h-[calc(100%-12px)] bg-indigo-600 rounded-lg shadow-md transition-transform duration-300 ease-in-out"
-             style="width: calc((100% - 12px) / 4); transform: translateX({% if selected_age == 'old' %}0{% elif selected_age == 'medium' %}100{% elif selected_age == 'new' %}200{% else %}300{% endif %}%);"></div>
-        
-        <button class="flex-1 px-3 py-2.5 text-center cursor-pointer rounded-lg text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'old' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
-                role="radio"
-                aria-checked="{{ 'true' if selected_age == 'old' else 'false' }}"
-                tabindex="{{ 0 if selected_age == 'old' else -1 }}"
-                type="button"
-                hx-get="/random?age=old"
-                hx-target="#album-content"
-                hx-swap="innerHTML"
-                onclick="updateSlider(0)">
-            Old
-        </button>
-        <button class="flex-1 px-3 py-2.5 text-center cursor-pointer rounded-lg text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'medium' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
-                role="radio"
-                aria-checked="{{ 'true' if selected_age == 'medium' else 'false' }}"
-                tabindex="{{ 0 if selected_age == 'medium' else -1 }}"
-                type="button"
-                hx-get="/random?age=medium"
-                hx-target="#album-content"
-                hx-swap="innerHTML"
-                onclick="updateSlider(1)">
-            Medium
-        </button>
-        <button class="flex-1 px-3 py-2.5 text-center cursor-pointer rounded-lg text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'new' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
-                role="radio"
-                aria-checked="{{ 'true' if selected_age == 'new' else 'false' }}"
-                tabindex="{{ 0 if selected_age == 'new' else -1 }}"
-                type="button"
-                hx-get="/random?age=new"
-                hx-target="#album-content"
-                hx-swap="innerHTML"
-                onclick="updateSlider(2)">
-            New
-        </button>
-        <button class="flex-1 px-3 py-2.5 text-center cursor-pointer rounded-lg text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'all' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
-                role="radio"
-                aria-checked="{{ 'true' if selected_age == 'all' else 'false' }}"
-                tabindex="{{ 0 if selected_age == 'all' else -1 }}"
-                type="button"
-                hx-get="/random?age=all"
-                hx-target="#album-content"
-                hx-swap="innerHTML"
-                onclick="updateSlider(3)">
-            All
+<div class="control-stack">
+    <div class="segment-wrapper w-full flex justify-center mb-4 sm:mb-6">
+        <div class="segmented-control inline-flex rounded-xl bg-gray-100 p-1.5 shadow-inner relative" role="radiogroup" aria-label="Select age group">
+            <div class="sliding-indicator absolute top-1.5 left-1.5 h-[calc(100%-12px)] bg-indigo-600 rounded-lg shadow-md transition-transform duration-300 ease-in-out"
+                 style="width: calc((100% - 12px) / 4); transform: translateX({% if selected_age == 'old' %}0{% elif selected_age == 'medium' %}100{% elif selected_age == 'new' %}200{% else %}300{% endif %}%);"></div>
+            
+            <button class="flex-1 px-3 py-2 text-center cursor-pointer rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'old' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
+                    role="radio"
+                    aria-checked="{{ 'true' if selected_age == 'old' else 'false' }}"
+                    tabindex="{{ 0 if selected_age == 'old' else -1 }}"
+                    type="button"
+                    hx-get="/random?age=old"
+                    hx-target="#album-content"
+                    hx-swap="innerHTML"
+                    onclick="updateSlider(0)">
+                Old
+            </button>
+            <button class="flex-1 px-3 py-2 text-center cursor-pointer rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'medium' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
+                    role="radio"
+                    aria-checked="{{ 'true' if selected_age == 'medium' else 'false' }}"
+                    tabindex="{{ 0 if selected_age == 'medium' else -1 }}"
+                    type="button"
+                    hx-get="/random?age=medium"
+                    hx-target="#album-content"
+                    hx-swap="innerHTML"
+                    onclick="updateSlider(1)">
+                Medium
+            </button>
+            <button class="flex-1 px-3 py-2 text-center cursor-pointer rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'new' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
+                    role="radio"
+                    aria-checked="{{ 'true' if selected_age == 'new' else 'false' }}"
+                    tabindex="{{ 0 if selected_age == 'new' else -1 }}"
+                    type="button"
+                    hx-get="/random?age=new"
+                    hx-target="#album-content"
+                    hx-swap="innerHTML"
+                    onclick="updateSlider(2)">
+                New
+            </button>
+            <button class="flex-1 px-3 py-2 text-center cursor-pointer rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative z-10 {% if selected_age == 'all' %}text-white{% else %}text-gray-600 hover:text-gray-800{% endif %}"
+                    role="radio"
+                    aria-checked="{{ 'true' if selected_age == 'all' else 'false' }}"
+                    tabindex="{{ 0 if selected_age == 'all' else -1 }}"
+                    type="button"
+                    hx-get="/random?age=all"
+                    hx-target="#album-content"
+                    hx-swap="innerHTML"
+                    onclick="updateSlider(3)">
+                All
+            </button>
+        </div>
+    </div>
+
+    <div class="reroll-container">
+        <button
+            id="reroll-button"
+            type="button"
+            hx-get="/random"
+            hx-target="#album-content"
+            hx-swap="innerHTML"
+            hx-sync="this:replace"
+            hx-disabled-elt="this"
+            class="w-full py-3 sm:py-3.5 px-6 text-sm sm:text-base bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 hover:shadow-xl">
+            🎲 Reroll
         </button>
     </div>
-</div>
-
-<div class="reroll-container">
-    <button
-        id="reroll-button"
-        type="button"
-        hx-get="/random"
-        hx-target="#album-content"
-        hx-swap="innerHTML"
-        hx-sync="this:replace"
-        hx-disabled-elt="this"
-        class="w-full py-3.5 px-6 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 hover:shadow-xl">
-        🎲 Reroll
-    </button>
 </div>
 
 <script>
