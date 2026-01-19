@@ -14,7 +14,7 @@ def set_age_cookie(response: Response, age: str):
     """Set the age selection in the cookie (90 days)"""
     if age not in ["old", "medium", "new", "all"]:
         age = "all"  # Default to "all" if invalid value
-    
+
     # Set cookie with 90 days expiry, SameSite=Lax
     response.set_cookie(
         key="age",
@@ -22,7 +22,7 @@ def set_age_cookie(response: Response, age: str):
         max_age=90 * 24 * 60 * 60,  # 90 days in seconds
         httponly=True,  # Prevent XSS
         samesite="lax",  # CSRF protection
-        secure=False  # Set to True if serving over HTTPS
+        secure=False,  # Set to True if serving over HTTPS
     )
 
 

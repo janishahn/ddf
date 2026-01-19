@@ -8,6 +8,20 @@
         {{ error }}
     </div>
     {% endif %}
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
+        <button
+            type="button"
+            hx-post="/admin/refresh"
+            hx-target="#refresh-status"
+            hx-swap="innerHTML"
+            hx-disabled-elt="this"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white text-sm font-semibold px-4 py-2.5 shadow-md hover:bg-slate-800 transition-all duration-200 w-full sm:w-auto">
+            Refresh catalog
+        </button>
+        <div id="refresh-status" class="text-xs sm:text-sm text-gray-500" aria-live="polite">
+            Catalog ready.
+        </div>
+    </div>
     <div id="album-panel">
         {% include "_album_panel.html" %}
     </div>
