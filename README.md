@@ -13,9 +13,9 @@ A FastAPI application that displays random album covers from the "Die drei ???" 
 
 ## Architecture
 
-- **FastAPI** - Backend framework serving HTML and JSON endpoints
-- **HTMX** - Frontend interactivity without full page reloads
-- **Jinja2** - Server-side templating
+- **FastAPI** - JSON API and static SPA hosting
+- **React + Vite** - Single-page app frontend
+- **shadcn/ui + Radix UI** - UI primitives
 - **Tailwind CSS** - Styling
 - **iTunes API** - Album data source
 
@@ -32,10 +32,27 @@ A FastAPI application that displays random album covers from the "Die drei ???" 
 # Install dependencies
 uv sync
 
-# Run the application
+# Run the backend
 uvicorn main:app --reload
 
+# In another terminal, run the frontend
+cd frontend
+npm run dev
+
 # Visit http://localhost:8000
+```
+
+The Vite dev server proxies `/api` to `http://localhost:8000`.
+
+## Production
+
+```bash
+# Build the frontend
+cd frontend
+npm run build
+
+# Run the backend + static SPA
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 ## Project Structure
@@ -47,6 +64,5 @@ uvicorn main:app --reload
 - `catalog.py` - Album catalog building and bucketing
 - `analytics.py` - Usage analytics tracking
 - `cookies.py` - Cookie management helpers
-- `templates/` - Jinja2 templates
-- `static/` - Static assets (CSS)
+- `frontend/` - Vite React SPA
 - `cache/` - Cached data (artist ID, albums, buckets, lengths, analytics)

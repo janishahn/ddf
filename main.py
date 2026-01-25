@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 import asyncio
 import json
 import logging
 import random
+from pathlib import Path
 from typing import Optional
 
 from models import Album
@@ -22,12 +22,6 @@ logger = logging.getLogger(__name__)
 # Initialize FastAPI app
 app = FastAPI(title="Die drei ??? Album Viewer")
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Set up Jinja2 templates
-templates = Jinja2Templates(directory="templates")
-
 # Initialize components
 cache_manager = CacheManager()
 itunes_client = iTunesClient()
@@ -36,15 +30,21 @@ analytics_tracker = AnalyticsTracker(cache_manager)
 random_bags: dict[str, list[int]] = {}
 random_bag_sources: dict[str, tuple[int, ...]] = {}
 refresh_task: asyncio.Task | None = None
+startup_task: asyncio.Task | None = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize the catalog on startup"""
-    try:
-        await catalog_builder.build_catalog(force_refresh=False)
-    except (json.JSONDecodeError, OSError, ValidationError):
-        logger.exception("Catalog build failed on startup")
+    global startup_task
+
+    async def _build_on_startup() -> None:
+        try:
+            await catalog_builder.build_catalog(force_refresh=False)
+        except (json.JSONDecodeError, OSError, ValidationError):
+            logger.exception("Catalog build failed on startup")
+
+    startup_task = asyncio.create_task(_build_on_startup())
 
 
 @app.on_event("shutdown")
@@ -54,166 +54,34 @@ async def shutdown_event():
     await itunes_client.close()
 
 
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    """Render the main page with a random album"""
-    # Get user's preferred age from cookie or default to "all"
-    preferred_age = get_age_cookie(request) or "all"
-
-    # Get a random album from the preferred bucket
-    album = await get_random_album_from_bucket(preferred_age)
-
-    if not album:
-        # If no albums found, return error page
-        return templates.TemplateResponse(
-            "index.html",
-            {"request": request, "album": None, "error": "No albums found"},
-        )
-
-    analytics_tracker.increment_album_shown(album.collection_id)
-
-    runtime_str = None
-    if album.runtime_millis:
-        minutes = album.runtime_millis // 60000
-        seconds = (album.runtime_millis % 60000) // 1000
-        runtime_str = f"{minutes}:{seconds:02d}"
-
-    response = templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "album": album,
-            "runtime_str": runtime_str,
-            "selected_age": preferred_age,
-            "error": None,
-        },
-    )
-    set_age_cookie(response, preferred_age)
-    return response
-
-
-@app.get("/random", response_class=HTMLResponse)
-async def get_random_album(request: Request, age: str = "all"):
-    """Return HTML fragment with a random album for the given age bucket"""
-    validated_age = validate_age_param(age)
-
-    album = await get_random_album_from_bucket(validated_age)
-
-    if not album:
-        return HTMLResponse(
-            content="<div class='text-center p-8 text-gray-500'>No albums available</div>"
-        )
-
-    runtime_str = None
-    if album.runtime_millis:
-        minutes = album.runtime_millis // 60000
-        seconds = (album.runtime_millis % 60000) // 1000
-        runtime_str = f"{minutes}:{seconds:02d}"
-
-    response = templates.TemplateResponse(
-        "_album_fragment.html",
-        {
-            "request": request,
-            "album": album,
-            "runtime_str": runtime_str,
-            "selected_age": validated_age,
-        },
-    )
-    set_age_cookie(response, validated_age)
-    response.headers["Cache-Control"] = "no-store"
-    analytics_tracker.increment_and_save_sometimes(validated_age, album.collection_id)
-    return response
-
-
-@app.post("/select-age", response_class=HTMLResponse)
-async def select_age(request: Request, age: str = "all"):
-    """Update age selection and return new album (alternative to GET /random)"""
-    validated_age = validate_age_param(age)
-
-    album = await get_random_album_from_bucket(validated_age)
-
-    if not album:
-        return HTMLResponse(
-            content="<div class='text-center p-8 text-gray-500'>No albums available</div>"
-        )
-
-    runtime_str = None
-    if album.runtime_millis:
-        minutes = album.runtime_millis // 60000
-        seconds = (album.runtime_millis % 60000) // 1000
-        runtime_str = f"{minutes}:{seconds:02d}"
-
-    response = templates.TemplateResponse(
-        "_album_fragment.html",
-        {
-            "request": request,
-            "album": album,
-            "runtime_str": runtime_str,
-            "selected_age": validated_age,
-        },
-    )
-    set_age_cookie(response, validated_age)
-    response.headers["Cache-Control"] = "no-store"
-    analytics_tracker.increment_and_save_sometimes(validated_age, album.collection_id)
-    return response
-
-
-@app.get("/healthz")
+@app.get("/api/healthz")
 async def health_check():
     """Simple health check endpoint"""
     return {"status": "ok"}
 
 
-@app.get("/stats")
+@app.get("/api/stats")
 async def get_stats():
     """Return analytics stats (for admin/development purposes)"""
     return analytics_tracker.get_analytics()
 
 
-@app.get("/admin/refresh/status", response_class=HTMLResponse)
-async def admin_refresh_status():
-    """Get catalog refresh status for the navbar"""
-    status = catalog_builder.get_refresh_status()
-    state = status["state"]
-    count = status["last_album_count"]
-    response_text = ""
-    if state == "running":
-        processed = status["processed"]
-        target = status["target"]
-        if target:
-            response_text = (
-                f"<span class='text-amber-600'>Refreshing · {processed}/{target} · "
-                f"{count} valid albums.</span>"
-            )
-        else:
-            response_text = (
-                f"<span class='text-amber-600'>Refreshing · {processed} checked · "
-                f"{count} valid albums.</span>"
-            )
-    elif state == "error":
-        response_text = (
-            f"<span class='text-red-600'>Refresh failed · {count} valid albums.</span>"
-        )
-    else:
-        if count:
-            response_text = (
-                f"<span class='text-emerald-700'>Ready · {count} valid albums.</span>"
-            )
-        else:
-            response_text = f"<span class='text-gray-500'>Initializing · {count} valid albums.</span>"
-
-    response = HTMLResponse(response_text)
+@app.get("/api/admin/catalog/status")
+async def admin_catalog_status():
+    """Get catalog refresh status for the SPA"""
+    response = JSONResponse(catalog_builder.get_refresh_status())
     response.headers["Cache-Control"] = "no-store"
     return response
 
 
-@app.post("/admin/refresh", response_class=HTMLResponse)
-async def admin_refresh():
+@app.post("/api/admin/catalog/refresh")
+async def admin_catalog_refresh():
     """Force-refresh the catalog and report the current count"""
     global refresh_task
     if refresh_task and not refresh_task.done():
-        response = HTMLResponse(
-            "<span class='text-amber-600'>Refresh already running.</span>"
+        response = JSONResponse(
+            {"state": "running", "started": False},
+            status_code=status.HTTP_202_ACCEPTED,
         )
         response.headers["Cache-Control"] = "no-store"
         return response
@@ -239,10 +107,53 @@ async def admin_refresh():
             refresh_task = None
 
     refresh_task.add_done_callback(_on_refresh_done)
-    response = HTMLResponse(
-        "<span class='text-emerald-600'>Refresh started. This can take a few minutes.</span>"
+    response = JSONResponse(
+        {"state": "running", "started": True},
+        status_code=status.HTTP_202_ACCEPTED,
     )
     response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.get("/api/albums/random")
+async def api_random_album(
+    request: Request, age: Optional[str] = None, reroll: bool = False
+):
+    """Return a random album from the specified bucket"""
+    preferred_age = get_age_cookie(request)
+    selected_age = validate_age_param(age) if age else (preferred_age or "all")
+
+    album = await get_random_album_from_bucket(selected_age)
+    if not album:
+        response = JSONResponse(
+            {"error": "no_albums"}, status_code=status.HTTP_404_NOT_FOUND
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+    runtime_str = None
+    if album.runtime_millis:
+        minutes = album.runtime_millis // 60000
+        seconds = (album.runtime_millis % 60000) // 1000
+        runtime_str = f"{minutes}:{seconds:02d}"
+
+    payload = {
+        "age": selected_age,
+        "album": album.model_dump(),
+        "runtime_millis": album.runtime_millis,
+        "runtime_str": runtime_str,
+    }
+
+    response = JSONResponse(payload)
+    set_age_cookie(response, selected_age)
+    response.headers["Cache-Control"] = "no-store"
+
+    if reroll:
+        analytics_tracker.increment_and_save_sometimes(
+            selected_age, album.collection_id
+        )
+    else:
+        analytics_tracker.increment_album_shown(album.collection_id)
     return response
 
 
@@ -277,3 +188,12 @@ async def get_random_album_from_bucket(age: str) -> Optional[Album]:
         return None
 
     return album
+
+
+def mount_spa() -> None:
+    dist_path = Path(__file__).resolve().parent / "frontend" / "dist"
+    if dist_path.exists():
+        app.mount("/", StaticFiles(directory=dist_path, html=True), name="spa")
+
+
+mount_spa()

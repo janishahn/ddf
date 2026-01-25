@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --background: 36 33% 96%;
+  --foreground: 22 18% 16%;
+  --card: 36 33% 98%;
+  --card-foreground: 22 18% 16%;
+  --muted: 30 16% 90%;
+  --muted-foreground: 22 10% 42%;
+  --primary: 206 62% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 24 38% 88%;
+  --secondary-foreground: 22 18% 16%;
+  --accent: 188 48% 86%;
+  --accent-foreground: 22 18% 16%;
+  --destructive: 6 74% 48%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 24 20% 82%;
+  --ring: 206 62% 36%;
+  --radius: 16px;
+  --radius-inset: calc(var(--radius) - 6px);
+  --radius-tight: calc(var(--radius) - 10px);
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at top left, hsl(188 52% 92%), transparent 55%),
+      radial-gradient(circle at 30% 20%, hsl(24 55% 92%), transparent 45%),
+      linear-gradient(140deg, hsl(36 33% 96%), hsl(32 40% 94%));
+    min-height: 100vh;
+    font-family: "Instrument Sans", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+@keyframes album-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.album-enter {
+  animation: album-in 420ms ease;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, hsl(24 18% 88%), hsl(24 28% 94%), hsl(24 18% 88%));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dropdown-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.animate-dropdown-in {
+  animation: dropdown-in 160ms ease-out;
+}
+
+.animate-dropdown-out {
+  animation: dropdown-out 120ms ease-in;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 240ms ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 200ms ease-in;
+}
