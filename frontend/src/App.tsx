@@ -193,8 +193,8 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen px-4 pb-16 pt-6 md:pt-14">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+      <div className="app-shell min-h-[100svh] px-4 pb-12 pt-6 md:pt-12">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 md:gap-7">
           <Accordion
             type="single"
             collapsible
@@ -257,11 +257,11 @@ export default function App() {
             </AccordionItem>
           </Accordion>
 
-          <Card className="hidden border-[hsl(var(--border))] bg-white/70 backdrop-blur md:block">
-            <CardHeader className="gap-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
+          <Card className="hidden border-[hsl(var(--border))] bg-white/75 backdrop-blur md:block">
+            <CardHeader className="gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <CardTitle className="text-2xl md:text-3xl">
+                  <CardTitle className="headline text-2xl tracking-tight md:text-3xl">
                     Die drei ??? Album Viewer
                   </CardTitle>
                   <CardDescription className="mt-1 text-sm md:text-base">
@@ -294,13 +294,14 @@ export default function App() {
             </CardHeader>
           </Card>
 
-          <Card className="overflow-hidden border-[hsl(var(--border))] bg-white/80 backdrop-blur">
-            <CardContent className="grid gap-6 pb-8 pt-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+          <Card className="viewer-card flex min-h-[calc(100svh-16rem)] flex-col overflow-hidden border-[hsl(var(--border))] bg-white/80 backdrop-blur md:min-h-[520px]">
+            <CardContent className="flex flex-1 flex-col gap-7 p-7 md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-8 md:p-8">
               <div className="flex items-center justify-center">
                 <div className="relative w-full max-w-xs md:max-w-sm">
                   <div
                     className={cn(
-                      "aspect-square w-full overflow-hidden rounded-[var(--radius)] bg-[hsl(var(--muted))] shadow-xl",
+                      "cover-frame cover-sheen group aspect-square w-full overflow-hidden rounded-[calc(var(--radius)+6px)] bg-[hsl(var(--muted))]",
+                      loading && "is-active",
                       loading && "opacity-90"
                     )}
                   >
@@ -309,7 +310,10 @@ export default function App() {
                         key={albumKey}
                         src={album.artwork_url}
                         alt={album.collection_name}
-                        className="h-full w-full object-cover"
+                        className={cn(
+                          "album-enter h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]",
+                          loading && "rerolling"
+                        )}
                         loading="lazy"
                       />
                     ) : (
@@ -324,15 +328,15 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center gap-4">
-                <div className="space-y-4">
-                  <div className="relative min-h-[120px]">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--muted-foreground))]">
+              <div className="flex flex-col justify-center gap-5 md:gap-6">
+                <div className="space-y-5 md:space-y-6">
+                  <div className="relative min-h-[150px] md:min-h-[180px]">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[hsl(var(--muted-foreground))]">
                       Random Episode
                     </p>
                     <h2
                       className={cn(
-                        "mt-2 text-2xl font-semibold md:text-3xl",
+                        "headline text-balance mt-2 text-[clamp(1.35rem,3.6vw,2.2rem)] leading-tight tracking-tight md:text-[clamp(1.8rem,2.4vw,2.6rem)]",
                         loading && "blur-[1.5px] opacity-60"
                       )}
                     >
@@ -340,7 +344,7 @@ export default function App() {
                     </h2>
                     <div
                       className={cn(
-                        "mt-2 flex flex-wrap items-center gap-3 text-sm text-[hsl(var(--muted-foreground))]",
+                        "mt-3 flex flex-wrap items-center gap-3 text-sm text-[hsl(var(--muted-foreground))]",
                         loading && "blur-[1.5px] opacity-60"
                       )}
                     >
@@ -367,7 +371,7 @@ export default function App() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col items-start gap-4 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-4 md:flex-row md:items-center md:justify-between">
+            <CardFooter className="mt-auto flex min-h-[96px] flex-col items-start gap-4 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-4 md:flex-row md:items-center md:justify-between md:py-5">
               <div className="relative w-full max-w-xs md:max-w-none">
                 <div
                   className="pointer-events-none absolute inset-1 z-0 rounded-[var(--radius-tight)] bg-[hsl(var(--card))] shadow transition-transform duration-200 ease-out"
@@ -393,7 +397,11 @@ export default function App() {
                   ))}
                 </ToggleGroup>
               </div>
-              <Button onClick={handleReroll} disabled={controlsDisabled}>
+              <Button
+                onClick={handleReroll}
+                disabled={controlsDisabled}
+                className="min-w-[9.5rem]"
+              >
                 <Shuffle className={cn("h-4 w-4", loading && "animate-spin")} />
                 Reroll
               </Button>

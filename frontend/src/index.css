@@ -1,25 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: 36 33% 96%;
-  --foreground: 22 18% 16%;
-  --card: 36 33% 98%;
+  --background: 34 45% 94%;
+  --foreground: 20 22% 14%;
+  --card: 36 45% 98%;
   --card-foreground: 22 18% 16%;
-  --muted: 30 16% 90%;
-  --muted-foreground: 22 10% 42%;
-  --primary: 206 62% 36%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 24 38% 88%;
-  --secondary-foreground: 22 18% 16%;
-  --accent: 188 48% 86%;
-  --accent-foreground: 22 18% 16%;
-  --destructive: 6 74% 48%;
+  --muted: 30 24% 89%;
+  --muted-foreground: 22 12% 40%;
+  --primary: 196 58% 28%;
+  --primary-foreground: 40 40% 96%;
+  --secondary: 32 32% 86%;
+  --secondary-foreground: 20 22% 14%;
+  --accent: 14 52% 84%;
+  --accent-foreground: 20 22% 14%;
+  --destructive: 8 70% 46%;
   --destructive-foreground: 0 0% 100%;
-  --border: 24 20% 82%;
-  --ring: 206 62% 36%;
+  --border: 28 24% 78%;
+  --ring: 196 58% 28%;
   --radius: 16px;
   --radius-inset: calc(var(--radius) - 6px);
   --radius-tight: calc(var(--radius) - 10px);
+  --font-body: "Lexend", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
 }
 
 @layer base {
@@ -31,18 +33,89 @@
     color: hsl(var(--foreground));
     background-color: hsl(var(--background));
     background-image:
-      radial-gradient(circle at top left, hsl(188 52% 92%), transparent 55%),
-      radial-gradient(circle at 30% 20%, hsl(24 55% 92%), transparent 45%),
-      linear-gradient(140deg, hsl(36 33% 96%), hsl(32 40% 94%));
+      radial-gradient(circle at 20% 10%, hsl(20 65% 88% / 0.75), transparent 50%),
+      radial-gradient(circle at 80% 0%, hsl(190 55% 86% / 0.7), transparent 50%),
+      radial-gradient(circle at 20% 90%, hsl(34 60% 92% / 0.7), transparent 55%),
+      linear-gradient(155deg, hsl(36 50% 96%), hsl(28 45% 92%));
     min-height: 100vh;
-    font-family: "Instrument Sans", "Segoe UI", sans-serif;
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(120deg, transparent 0%, hsl(196 40% 24% / 0.08) 45%, transparent 70%),
+      radial-gradient(circle at 80% 30%, hsl(196 50% 24% / 0.12), transparent 45%);
+    opacity: 0.6;
+    z-index: 0;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    z-index: 0;
   }
 
   button,
   [role="button"] {
     cursor: pointer;
   }
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.viewer-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-image:
+    linear-gradient(145deg, hsl(36 48% 98%), hsl(32 40% 92%));
+  box-shadow:
+    0 24px 60px -42px hsl(200 40% 20% / 0.6),
+    0 12px 32px -24px hsl(24 30% 20% / 0.4);
+}
+
+.viewer-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, hsl(188 48% 88% / 0.4), transparent 40%),
+    radial-gradient(circle at 90% 80%, hsl(18 68% 86% / 0.4), transparent 45%);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.viewer-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cover-frame {
+  border-radius: calc(var(--radius) + 6px);
+  box-shadow:
+    0 18px 40px -24px hsl(20 30% 20% / 0.6),
+    0 8px 18px -14px hsl(196 40% 28% / 0.35);
+}
+
+.headline {
+  font-family: var(--font-display);
+}
+
+.text-balance {
+  text-wrap: balance;
 }
 
 @keyframes album-in {
@@ -58,6 +131,85 @@
 
 .album-enter {
   animation: album-in 420ms ease;
+}
+
+@keyframes cover-sheen {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+    opacity: 0;
+  }
+  30%,
+  70% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateX(120%) skewX(-12deg);
+    opacity: 0;
+  }
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reroll-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.float-in {
+  animation: float-in 420ms ease both;
+}
+
+.stagger-1 {
+  animation-delay: 90ms;
+}
+
+.stagger-2 {
+  animation-delay: 180ms;
+}
+
+.stagger-3 {
+  animation-delay: 260ms;
+}
+
+.cover-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-sheen::after {
+  content: "";
+  position: absolute;
+  inset: -20% 0;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    hsl(40 40% 98% / 0.65) 45%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cover-sheen.is-active::after {
+  animation: cover-sheen 1.6s ease;
+}
+
+.rerolling {
+  animation: reroll-pulse 420ms ease-in-out;
 }
 
 @keyframes shimmer {
