@@ -194,7 +194,7 @@ export default function App() {
   return (
     <TooltipProvider>
       <div className="app-shell min-h-[100svh] px-4 pb-12 pt-6 md:pt-12">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 md:gap-7">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 md:gap-7">
           <Accordion
             type="single"
             collapsible
