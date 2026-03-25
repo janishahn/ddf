@@ -1,0 +1,44 @@
+{
+  "milestone": "layout-viewport-parity",
+  "round": 1,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 13,
+    "passed": 11,
+    "failed": 1,
+    "blocked": 1
+  },
+  "passedAssertions": [
+    "VAL-DESKTOP-001",
+    "VAL-DESKTOP-002",
+    "VAL-DESKTOP-003",
+    "VAL-DESKTOP-004",
+    "VAL-DESKTOP-005",
+    "VAL-MOBILE-001",
+    "VAL-MOBILE-002",
+    "VAL-MOBILE-003",
+    "VAL-MOBILE-005",
+    "VAL-STABLE-001",
+    "VAL-STABLE-003"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-MOBILE-004",
+      "reason": "The validation contract specifies that age filter and reroll button should be 'stacked vertically' on mobile, but the actual implementation displays the age filter options (Old, Medium, New, All) horizontally inline with the reroll button positioned below the group."
+    }
+  ],
+  "blockedAssertions": [
+    {
+      "id": "VAL-STABLE-002",
+      "blockedBy": "No albums in the current playable buckets (all, old, medium, new) contain runtime data. The cache only has runtime_millis for 2 albums (IDs: 498039308, 1529420801) which aren't in playable buckets. Cannot test 'with runtime' scenario."
+    }
+  ],
+  "appliedUpdates": [
+    {
+      "target": "user-testing.md",
+      "description": "Added Flow Validator Guidance: Browser section with isolation rules, resource boundaries, concurrency limits, and evidence requirements",
+      "source": "setup"
+    }
+  ],
+  "previousRound": null
+}

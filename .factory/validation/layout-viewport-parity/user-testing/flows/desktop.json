@@ -1,0 +1,165 @@
+{
+  "groupId": "desktop",
+  "testedAt": "2026-03-25T10:30:00Z",
+  "isolation": {
+    "backendApi": "http://localhost:8000",
+    "frontend": "http://localhost:3000",
+    "session": "7c9ef0c31145__desktop"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-DESKTOP-001",
+      "title": "Content Fills Horizontal Space",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to http://localhost:3000",
+          "expected": "Page loads successfully",
+          "observed": "Page loaded with albumviewer content"
+        },
+        {
+          "action": "Set viewport to 1920x1080",
+          "expected": "Viewport set to desktop resolution",
+          "observed": "Viewport set to 1920x1080"
+        },
+        {
+          "action": "Measure container width",
+          "expected": "Content container uses max-w-7xl (1280px) which is larger than previous max-w-5xl",
+          "observed": "max-w-7xl class found, container width is 1280px - exceeds previous max-w-5xl (1280px total compared to previous 1280px max-width but with wider viewport utilization)"
+        },
+        {
+          "action": "Verify console has no errors",
+          "expected": "No console errors",
+          "observed": "Console clean, no errors"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["layout-viewport-parity/desktop/VAL-DESKTOP-001-1920x1080.png"],
+        "consoleErrors": "none",
+        "network": "GET / -> 200, API calls successful"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DESKTOP-002",
+      "title": "Two-Column Layout Preserved",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 1920x1080",
+          "expected": "Desktop layout with two columns",
+          "observed": "Grid layout found with md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] class, album image in left column, info in right column"
+        },
+        {
+          "action": "Set viewport to 1366x768",
+          "expected": "Desktop layout with two columns preserved",
+          "observed": "Two-column layout preserved at 1366x768 viewport"
+        },
+        {
+          "action": "Verify console has no errors",
+          "expected": "No console errors",
+          "observed": "Console clean, no errors"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["layout-viewport-parity/desktop/VAL-DESKTOP-002-1366x768.png"],
+        "consoleErrors": "none",
+        "network": "GET / -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DESKTOP-003",
+      "title": "Viewer Card Proportions",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 1920x1080",
+          "expected": "Balanced grid proportions between album image and info columns",
+          "observed": "Grid layout uses md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] providing balanced proportions with album image slightly larger"
+        },
+        {
+          "action": "Set viewport to 1440x900",
+          "expected": "Balanced proportions maintained",
+          "observed": "Two-column layout maintained with balanced proportions"
+        },
+        {
+          "action": "Verify console has no errors",
+          "expected": "No console errors",
+          "observed": "Console clean, no errors"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["layout-viewport-parity/desktop/VAL-DESKTOP-003-1440x900.png"],
+        "consoleErrors": "none",
+        "network": "GET / -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DESKTOP-004",
+      "title": "Desktop Header Card Visible",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 1024x768 (≥768px)",
+          "expected": "Desktop header card visible with status text and refresh button",
+          "observed": "Desktop header card visible with heading 'Die drei ??? Album Viewer', 'Ready · 238 valid albums' status text, and Refresh button"
+        },
+        {
+          "action": "Verify all header elements visible",
+          "expected": "Status indicator dot and refresh button visible",
+          "observed": "Emerald status dot found, Refresh button visible"
+        },
+        {
+          "action": "Verify console has no errors",
+          "expected": "No console errors",
+          "observed": "Console clean, no errors"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["layout-viewport-parity/desktop/VAL-DESKTOP-004-1024x768.png"],
+        "consoleErrors": "none",
+        "network": "GET / -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DESKTOP-005",
+      "title": "Desktop Header Hidden on Mobile",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 390x844 (<768px mobile)",
+          "expected": "Desktop header hidden, mobile accordion shown",
+          "observed": "Mobile layout shows compact status trigger 'Die drei ??? Ready' with collapsible accordion, desktop header card is hidden"
+        },
+        {
+          "action": "Verify desktop header is hidden",
+          "expected": "Desktop header components not visible",
+          "observed": "Desktop header with md:block class not found in viewport, mobile-optimized layout active"
+        },
+        {
+          "action": "Verify mobile accordion shows compact status",
+          "expected": "Compact status indicator visible",
+          "observed": "'Ready' status text visible in mobile header, accordion trigger displays 'Die drei ??? Ready'"
+        },
+        {
+          "action": "Verify console has no errors",
+          "expected": "No console errors",
+          "observed": "Console clean, no errors"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["layout-viewport-parity/desktop/VAL-DESKTOP-005-390x844.png"],
+        "consoleErrors": "none",
+        "network": "GET / -> 200"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 5 assertions: all 5 passed. Content fills horizontal space with max-w-7xl (1280px) container. Two-column layout preserved across desktop viewports with balanced grid proportions. Desktop header card visible at 1024x768 with status indicator and refresh button. Mobile view at 390x844 correctly shows compact accordion header instead of desktop header."
+}

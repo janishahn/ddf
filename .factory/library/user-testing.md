@@ -46,3 +46,33 @@ For each viewport size, verify:
 - [ ] No horizontal scroll on desktop
 - [ ] Minimal vertical scroll on mobile (390x667)
 - [ ] Hover effects functional
+
+## Flow Validator Guidance: Browser
+
+### Isolation Rules
+- All tests read from shared backend and frontend services
+- No shared mutable state between tests
+- Each validator works independently with its own browser session
+- Use `--session` flag with agent-browser for session isolation
+
+### Resource Boundaries
+- Backend API: http://localhost:8000
+- Frontend: http://localhost:3000
+- Viewport sizes: Use exact dimensions as specified in assertions
+- Sessions: Use session ID format `<session-prefix>__<group-id>` (e.g., `layout1234__desktop`)
+
+### Concurrency Limits
+- Max 3-5 concurrent browser sessions
+- Each session uses ~300MB RAM
+- Parallel validators safe to run simultaneously
+
+### Required Evidence per Assertion
+- Desktop assertions: Screenshot at 1920x1080 or 1440x900 or 1024x768
+- Mobile assertions: Screenshot at 390x844 or 390x667
+- Console check: `console-errors` in report
+- Visual inspection notes required for each assertion
+
+### Special Considerations
+- VAL-STABLE assertions require comparing screenshots across multiple albums
+- Use reroll action to get different albums for stability testing
+- Capture initial load state before any interactions
