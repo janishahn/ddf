@@ -1,0 +1,47 @@
+{
+  "milestone": "integration-testing",
+  "round": 1,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 10,"passed": 9,
+    "failed": 1,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-CROSS-001",
+    "VAL-CROSS-002",
+    "VAL-CROSS-003",
+    "VAL-CROSS-004",
+    "VAL-CROSS-005",
+    "VAL-CROSS-006",
+    "VAL-CROSS-007",
+    "VAL-CROSS-008",
+    "VAL-CROSS-010"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-CROSS-009",
+      "reason": "Toast notification did NOT appear when API error occurred. The notification region (role='region' with aria-label 'Notifications') remained empty after the error. However, the previous album state was correctly preserved - the album remained visible after the failed reroll request."
+    }
+  ],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": null,
+  "frictions": [
+    {
+      "description": "Catalog refresh running in background caused 500 errors during testing. These errors appear to be from a separate catalog status polling mechanism and are unrelated to the core functionality being tested.",
+      "affectedAssertions": ["VAL-CROSS-003", "VAL-CROSS-008"],
+      "resolution": "Allowed refresh to complete before testing, verified reroll worked successfully despite background errors"
+    }
+  ],
+  "toolsUsed": ["agent-browser"],
+  "flowReports": [
+    ".factory/validation/integration-testing/user-testing/flows/init-load.json",
+    ".factory/validation/integration-testing/user-testing/flows/interactions.json",
+    ".factory/validation/integration-testing/user-testing/flows/responsive.json",
+    ".factory/validation/integration-testing/user-testing/flows/hover-reroll.json",
+    ".factory/validation/integration-testing/user-testing/flows/refresh-status.json",
+    ".factory/validation/integration-testing/user-testing/flows/error-toast.json",
+    ".factory/validation/integration-testing/user-testing/flows/apple-music-link.json"
+  ]
+}

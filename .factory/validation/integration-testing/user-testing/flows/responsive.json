@@ -1,0 +1,82 @@
+{
+  "groupId": "responsive",
+  "testedAt": "2026-03-25T00:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "backendUrl": "http://localhost:8000",
+    "sessionId": "c0a7a28a9ba4__responsive",
+    "viewports": [
+      "1024x768 (desktop)",
+      "767x1024 (below mobile breakpoint)",
+      "390x844 (mobile)"
+    ]
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-004",
+      "title": "Desktop to Mobile Layout Adaptation",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 1024x768 (desktop >=768px)",
+          "expected": "Desktop header visible with Refresh button",
+          "observed": "Desktop header visible with Refresh button - snapshot shows 'button \"Refresh\"'"
+        },
+        {
+          "action": "Set viewport to 767x1024 (below mobile breakpoint <768px)",
+          "expected": "Desktop header hidden, mobile accordion visible",
+          "observed": "Mobile accordion visible - snapshot shows 'button \"Die drei ??? Ready\"'. Desktop Refresh button replaced by collapsible accordion."
+        },
+        {
+          "action": "Set viewport to 390x844 (mobile)",
+          "expected": "Layout shows single column, mobile accordion with compact status",
+          "observed": "Layout correctly shows mobile accordion with compact status 'Die drei ??? Refreshing…' (app name + short status indicator)"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "integration-testing/responsive/VAL-CROSS-004-desktop-1024x768.png",
+          "integration-testing/responsive/VAL-CROSS-004-mobile-breakpoint-767x1024.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - visual layout verification"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "title": "Mobile Accordion Expand and Collapse",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Set viewport to 390x844 (mobile)",
+          "expected": "Mobile accordion visible in collapsed state",
+          "observed": "Accordion trigger shows compact status 'Die drei ??? Refreshing…'"
+        },
+        {
+          "action": "Click accordion trigger to expand",
+          "expected": "Accordion expands showing full status content with Refresh button",
+          "observed": "Accordion expanded successfully - snapshot shows 'button \"Die drei ??? Refreshing…\"[expanded]' and 'button \"Refresh catalog\" [disabled]'"
+        },
+        {
+          "action": "Click accordion trigger to collapse",
+          "expected": "Accordion collapses smoothly, expanded content hidden",
+          "observed": "Accordion collapsed successfully - expanded content no longer visible in snapshot, back to compact trigger only"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "integration-testing/responsive/VAL-CROSS-005-collapsed-390x844.png",
+          "integration-testing/responsive/VAL-CROSS-005-expanded-390x844.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - UI interaction verification"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 2 assertions: both passed. VAL-CROSS-004 confirmed desktop-to-mobile layout adaptation works correctly - desktop header (Refresh button) is visible at 1024x768, replaced by mobile accordion (compact status) at 767x1024. VAL-CROSS-005 confirmed mobile accordion expand/collapse functionality works smoothly with animation (waited 300ms for animation completion). No console errors observed during testing."
+}
