@@ -121,7 +121,7 @@
 @keyframes album-in {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.98);
+    transform: translateY(10px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -130,7 +130,7 @@
 }
 
 .album-enter {
-  animation: album-in 420ms ease;
+  animation: album-in 320ms ease-out;
 }
 
 @keyframes cover-sheen {
@@ -138,9 +138,9 @@
     transform: translateX(-120%) skewX(-12deg);
     opacity: 0;
   }
-  30%,
-  70% {
-    opacity: 0.18;
+  25%,
+  75% {
+    opacity: 0.15;
   }
   100% {
     transform: translateX(120%) skewX(-12deg);
@@ -165,7 +165,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.02);
+    transform: scale(1.015);
   }
 }
 
@@ -205,7 +205,7 @@
 }
 
 .cover-sheen.is-active::after {
-  animation: cover-sheen 1.6s ease;
+  animation: cover-sheen 1.2s ease-out;
 }
 
 .rerolling {
@@ -224,7 +224,7 @@
 .skeleton-shimmer {
   background: linear-gradient(90deg, hsl(24 18% 88%), hsl(24 28% 94%), hsl(24 18% 88%));
   background-size: 200% 100%;
-  animation: shimmer 1.4s ease infinite;
+  animation: shimmer 1.2s ease-in-out infinite;
 }
 
 @keyframes dropdown-in {
