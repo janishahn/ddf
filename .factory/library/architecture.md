@@ -52,10 +52,30 @@ frontend/src/
 
 ### Animation Classes
 
-- `album-enter` - Fade + slide-in on mount (420ms)
-- `cover-sheen` - Diagonal shimmer (1.6s)
+- `album-enter` - Fade + slide-in on mount (320ms ease-out)
+- `cover-sheen` - Diagonal shimmer (1.2s)
 - `reroll-pulse` - Scale pulse during reroll (420ms)
-- `shimmer` - Skeleton horizontal shimmer (1.4s infinite)
+- `shimmer` - Skeleton horizontal shimmer (1.2s infinite)
+
+### Async Request Cancellation
+
+App.tsx uses an AbortController pattern to handle concurrent requests safely:
+
+```tsx// Refs for cancellationconst controllerRef = useRef<AbortController | null>(null);
+const requestIdRef = useRef(0);
+
+// In loadAlbum():// 1. Abort previous request
+controllerRef.current?.abort();
+controllerRef.current = new AbortController();// 2. Generate unique request ID
+const requestId = ++requestIdRef.current;
+
+// 3. Check for stale responses before updating state
+if (requestId === requestIdRef.current) {
+  setLoading(false);
+}
+```
+
+This pattern prevents race conditions when users rapidly click reroll or change age filters.
 
 ## CSS Custom Properties
 
