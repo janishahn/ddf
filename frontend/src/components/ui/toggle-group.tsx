@@ -20,7 +20,7 @@ const toggleGroupVariants = cva(
 );
 
 const toggleItemVariants = cva(
-  "inline-flex items-center justify-center rounded-[var(--radius-tight)] px-3 py-1.5 font-medium text-[hsl(var(--muted-foreground))] transition-colors data-[state=on]:text-[hsl(var(--foreground))]",
+  "inline-flex items-center justify-center rounded-[var(--radius-tight)] px-3 py-1.5 font-medium text-[hsl(var(--muted-foreground))] transition-colors duration-150 hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--foreground))] data-[state=on]:text-[hsl(var(--foreground))]",
   {
     variants: {
       size: {
