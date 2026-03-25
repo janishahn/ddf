@@ -330,7 +330,7 @@ export default function App() {
 
               <div className="flex flex-col justify-center gap-5 md:gap-6">
                 <div className="space-y-5 md:space-y-6">
-                  <div className="relative min-h-[100px] md:min-h-[180px]">
+                  <div className="relative min-h-[150px] md:min-h-[180px]">
                     <p className="text-xs uppercase tracking-[0.3em] text-[hsl(var(--muted-foreground))]">
                       Random Episode
                     </p>
@@ -371,7 +371,7 @@ export default function App() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="mt-auto flex min-h-[72px] flex-col items-start gap-3 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-3 md:min-h-[96px] md:flex-row md:items-center md:justify-between md:gap-4 md:py-5">
+            <CardFooter className="mt-auto flex min-h-[96px] flex-col items-start gap-3 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-3 md:flex-row md:items-center md:justify-between md:gap-4 md:py-5">
               <div className="relative w-full max-w-xs md:max-w-none">
                 <div
                   className="pointer-events-none absolute inset-1 z-0 rounded-[var(--radius-tight)] bg-[hsl(var(--card))] shadow transition-transform duration-200 ease-out"
