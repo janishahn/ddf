@@ -294,8 +294,8 @@ export default function App() {
             </CardHeader>
           </Card>
 
-          <Card className="viewer-card flex min-h-[calc(100svh-16rem)] flex-col overflow-hidden border-[hsl(var(--border))] bg-white/80 backdrop-blur md:min-h-[520px]">
-            <CardContent className="flex flex-1 flex-col gap-7 p-7 md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-8 md:p-8">
+          <Card className="viewer-card flex min-h-[calc(100svh-12rem)] flex-col overflow-hidden border-[hsl(var(--border))] bg-white/80 backdrop-blur md:min-h-[520px]">
+            <CardContent className="flex flex-1 flex-col gap-5 p-5 md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-8 md:p-8">
               <div className="flex items-center justify-center">
                 <div className="relative w-full max-w-xs md:max-w-sm">
                   <div
@@ -330,13 +330,13 @@ export default function App() {
 
               <div className="flex flex-col justify-center gap-5 md:gap-6">
                 <div className="space-y-5 md:space-y-6">
-                  <div className="relative min-h-[150px] md:min-h-[180px]">
+                  <div className="relative min-h-[100px] md:min-h-[180px]">
                     <p className="text-xs uppercase tracking-[0.3em] text-[hsl(var(--muted-foreground))]">
                       Random Episode
                     </p>
                     <h2
                       className={cn(
-                        "headline text-balance mt-2 text-[clamp(1.35rem,3.6vw,2.2rem)] leading-tight tracking-tight md:text-[clamp(1.8rem,2.4vw,2.6rem)]",
+                        "headline text-balance mt-1 text-[clamp(1.25rem,3.6vw,2.2rem)] leading-tight tracking-tight md:text-[clamp(1.8rem,2.4vw,2.6rem)]",
                         loading && "blur-[1.5px] opacity-60"
                       )}
                     >
@@ -344,7 +344,7 @@ export default function App() {
                     </h2>
                     <div
                       className={cn(
-                        "mt-3 flex flex-wrap items-center gap-3 text-sm text-[hsl(var(--muted-foreground))]",
+                        "mt-2 flex flex-wrap items-center gap-3 text-sm text-[hsl(var(--muted-foreground))]",
                         loading && "blur-[1.5px] opacity-60"
                       )}
                     >
@@ -352,9 +352,9 @@ export default function App() {
                       {runtime ? <span>Runtime {runtime}</span> : null}
                     </div>
                     {loading ? (
-                      <div className="pointer-events-none absolute inset-0 space-y-3 pt-6">
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-1/2" />
+                      <div className="pointer-events-none absolute inset-0 space-y-2 pt-5">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
                       </div>
                     ) : null}
                   </div>
@@ -371,7 +371,7 @@ export default function App() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="mt-auto flex min-h-[96px] flex-col items-start gap-4 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-4 md:flex-row md:items-center md:justify-between md:py-5">
+            <CardFooter className="mt-auto flex min-h-[72px] flex-col items-start gap-3 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))] py-3 md:min-h-[96px] md:flex-row md:items-center md:justify-between md:gap-4 md:py-5">
               <div className="relative w-full max-w-xs md:max-w-none">
                 <div
                   className="pointer-events-none absolute inset-1 z-0 rounded-[var(--radius-tight)] bg-[hsl(var(--card))] shadow transition-transform duration-200 ease-out"
