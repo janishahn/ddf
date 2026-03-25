@@ -1,0 +1,50 @@
+{
+  "milestone": "micro-interactions",
+  "round": 1,
+  "status": "pass",
+  "assertionsSummary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-MICRO-001",
+    "VAL-MICRO-002",
+    "VAL-MICRO-003",
+    "VAL-MICRO-004",
+    "VAL-MICRO-005",
+    "VAL-MICRO-006",
+    "VAL-MICRO-007",
+    "VAL-MICRO-008",
+    "VAL-MICRO-009",
+    "VAL-MICRO-010"
+  ],
+  "failedAssertions": [],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": null,
+  "flowReports": {
+    "hover-states": {
+      "assertions": ["VAL-MICRO-001", "VAL-MICRO-002", "VAL-MICRO-004"],
+      "status": "pass",
+      "summary": "All3 hover assertions passed. Album cover scales ~2% with 500ms ease-out. Reroll button shows brightness(1.05) on hover. Age filter shows accent background on hover."
+    },
+    "loading-animations": {
+      "assertions": ["VAL-MICRO-005", "VAL-MICRO-006"],
+      "status": "pass",
+      "summary": "Both loading spin animations passed. Shuffle icon spins on reroll, RefreshCcw icon spins during catalog refresh."
+    },
+    "button-states": {
+      "assertions": ["VAL-MICRO-007", "VAL-MICRO-008", "VAL-MICRO-009"],
+      "status": "pass",
+      "summary": "All3 button state assertions passed. Disabled state shows opacity-60 and pointer-events-none. Focus rings visible via focus-visible classes."
+    },
+    "animations": {
+      "assertions": ["VAL-MICRO-003", "VAL-MICRO-010"],
+      "status": "pass",
+      "summary": "Both animation assertions passed. Age filter indicator slides with 200ms ease-out. Accordion expands 240ms ease-out, collapses 200ms ease-in."
+    }
+  },
+  "testedAt": "2026-03-25T11:45:00.000Z"
+}

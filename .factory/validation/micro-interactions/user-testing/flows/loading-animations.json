@@ -1,0 +1,49 @@
+{
+  "groupId": "loading-animations",
+  "testedAt": "2026-03-25T00:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "backendApi": "http://localhost:8000",
+    "browserSession": "f27750e107d5__loading",
+    "viewport": "1920x1080"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-MICRO-005",
+      "title": "Reroll Button Loading Spin",
+      "status": "pass",
+      "steps": [
+        { "action": "Open browser to http://localhost:3000", "expected": "Page loads successfully", "observed": "Page loaded with album viewer visible" },
+        { "action": "Set viewport to 1920x1080", "expected": "Desktop viewport set", "observed": "Viewport set to 1920x1080" },
+        { "action": "Click Reroll button (ref=e7)", "expected": "Reroll triggered, shuffle icon spins during loading", "observed": "Reroll triggered successfully" },
+        { "action": "Capture screenshot during loading", "expected": "Screenshot shows spinning icon", "observed": "Screenshot captured during loading state" }
+      ],
+      "evidence": {
+        "screenshots": ["micro-interactions/loading-animations/VAL-MICRO-005-reroll-spinning.png"],
+        "consoleErrors": "none",
+        "codeInspection": "Shuffle icon has animate-spin class applied when loading=true in App.tsx line: <Shuffle className={cn(\"h-4 w-4\", loading && \"animate-spin\")} />"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-MICRO-006",
+      "title": "Refresh Button Loading Spin",
+      "status": "pass",
+      "steps": [
+        { "action": "Wait for previous operation to complete", "expected": "Page ready for next action", "observed": "Page settled after reroll" },
+        { "action": "Click Refresh button (ref=e1)", "expected": "Catalog refresh triggered, refresh icon spins", "observed": "Refresh triggered successfully" },
+        { "action": "Capture screenshot during refresh", "expected": "Screenshot shows spinning refresh icon", "observed": "Screenshot captured during refresh state" }
+      ],
+      "evidence": {
+        "screenshots": ["micro-interactions/loading-animations/VAL-MICRO-006-refresh-spinning.png"],
+        "consoleErrors": "none",
+        "codeInspection": "RefreshCcw icon has animate-spin class applied when refreshDisabled=true in App.tsx line: <RefreshCcw className={cn(\"h-4 w-4\", refreshDisabled && \"animate-spin\")} />"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 2 assertions: 2 passed. Both loading spin animations are correctly implemented using Tailwind's animate-spin utility class. The Shuffle icon on the Reroll button spins when loading, and the RefreshCcw icon on the Refresh button spins during catalog refresh."
+}
