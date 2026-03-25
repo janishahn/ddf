@@ -47,6 +47,28 @@ For each viewport size, verify:
 - [ ] Minimal vertical scroll on mobile (390x667)
 - [ ] Hover effects functional
 
+## Error Scenario Testing
+
+When testing error behavior (network failures, API errors, empty data):
+
+1. **Simulate API failure**: Stop the backend mid-session
+   ```bash
+   lsof -ti :8000 | xargs kill
+   ```
+   The album remains displayed (preserved state) and reroll will fail with 500 error.
+
+2. **Verify error handling**:
+   - Click reroll/button that triggers API call
+   - Check `agent-browser console` for error messages (e.g., "Failed to load resource: 500 Internal Server Error")
+   - Verify toast notification appears
+   - Confirm previous album still displayed
+
+3. **Restart and recover**:
+   ```bash
+   cd /path/to/ddf && uv run uvicorn main:app --reload --port 8000
+   ```
+   Verify retry functionality works after recovery.
+
 ## Flow Validator Guidance: Browser
 
 ### Isolation Rules
