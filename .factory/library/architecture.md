@@ -77,6 +77,39 @@ if (requestId === requestIdRef.current) {
 
 This pattern prevents race conditions when users rapidly click reroll or change age filters.
 
+### Status Polling Intervals
+
+The status polling uses different intervals based on refresh state:
+
+```tsx
+// App.tsx:67-68
+const delay = data.state === "running" ? 3000 : 15000;
+timeoutId = window.setTimeout(poll, delay);
+```
+
+- **Running state:** Poll every 3 seconds (responsive during active catalog refresh)
+- **Idle state:** Poll every 15 seconds (reduces server load wheninactive)
+
+### Error Handling
+
+The error handling implementation preserves album state on error:
+
+```tsx
+// App.tsx lines 108-120
+catch (e) {
+  if (e instanceof Error && e.message === "no_albums") {
+    toast.error("Keine Albenin diesem Zeitraum");
+  } else if (!(e instanceof DOMException && e.name === "AbortError")) {
+    toast.error("Fehler beim Laden");
+  }
+  // Note: setAlbum is NOT called here - previous album is preserved
+}
+```
+
+- `toast.error()` displays user-facing error messages
+- Previous album state is preserved (setAlbum only called in success path)
+- `AbortError` from intentional cancellation is silently ignored
+
 ## CSS Custom Properties
 
 Defined in `index.css`:

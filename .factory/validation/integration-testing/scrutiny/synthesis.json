@@ -1,6 +1,6 @@
 {
   "milestone": "integration-testing",
-  "round": 1,
+  "round": 2,
   "status": "fail",
   "validatorsRun": {
     "test": { "passed": true, "command": "echo 'No test suite configured'", "exitCode": 0 },
@@ -8,43 +8,33 @@
     "lint": { "passed": true, "command": "npm run lint", "exitCode": 0 }
   },
   "reviewsSummary": {
-    "total": 3,
-    "passed": 2,
+    "total": 4,
+    "passed": 3,
     "failed": 1,
-    "failedFeatures": ["cross-flow-interactions"]
+    "failedFeatures": ["fix-error-handling-toast"]
   },
   "blockingIssues": [
     {
-      "featureId": "cross-flow-interactions",
+      "featureId": "fix-error-handling-toast",
       "severity": "blocking",
-      "description": "Expected behavior 'Hover then reroll flow works without visual glitches' was not verified. The handoff shows no hover interaction testing. Worker should have hovered over album cover (verifying scale effect), then moved to reroll button and clicked to verify clean transition."
-    },
-    {
-      "featureId": "cross-flow-interactions",
-      "severity": "blocking",
-      "description": "Expected behavior 'Catalog refresh shows running state, then returns to ready' was not verified. Code shows this flow exists (status polling, amber dot for running, emerald for ready, spinning refresh icon), but worker did not trigger refresh or verify status indicators."
-    },
-    {
-      "featureId": "cross-flow-interactions",
-      "severity": "blocking",
-      "description": "Expected behavior 'Errors display toast notification, previous album remains' was not verified. Worker did not test error scenarios (network failure, empty bucket). Code has error handling via toast.error(), but verification needed."
+      "description": "VAL-CROSS-009 assertion 'Errors display toast notification, previous album remains' was not verified. The worker confirmed toast system exists and albums load successfully, but never triggered an actual error scenario. No network failure was simulated, no empty bucket scenario was tested, and no error toast was observed. The implementation is correct (toast.error() in catch block, previous album preserved), but the verification requirement was not met."
     }
   ],
   "appliedUpdates": [
     {
       "target": "library",
-      "description": "Updated animation timings in architecture.md to reflect actual values (album-enter: 320ms, cover-sheen: 1.2s, shimmer: 1.2s). Added AbortController/request cancellation pattern documentation.",
-      "sourceFeature": "cross-flow-initial-load"
+      "description": "Added status polling intervals documentation (3s for running, 15s for idle) and error handling pattern (toast.error with AbortError handling, previous album preservation) to architecture.md",
+      "sourceFeature": "fix-catalog-refresh-status, fix-error-handling-toast"
     }
   ],
   "suggestedGuidanceUpdates": [
     {
       "target": "AGENTS.md",
-      "suggestion": "Add guidance for verification-only features: When a feature's expected behavior includes verification of existing flows (not just implementation), workers must test all flows explicitly, not just visual inspection. Verification features should enumerate specific test cases (hover interactions, status changes, error scenarios).",
-      "evidence": "cross-flow-interactions worker tested 5/8 flows but missed hover-then-reroll, catalog refresh status, and error handling toast. The frontend-polish-worker skill focuses on implementation and visual verification, not comprehensive flow testing.",
-      "isSystemic": false
+      "suggestion": "Add explicit verification methodology for error scenarios: When a feature's expected behavior includes error states (network failure, empty data, invalid input), workers must either (a) simulate the error condition and observe the behavior, or (b) provide code analysis proving the error path is reachable and correctly implemented. Simply confirming 'error handling code exists' is insufficient.",
+      "evidence": "Both cross-flow-interactions and fix-error-handling-toast workers verified that error handling code exists (toast.error in catch block) but neither actually triggered an error to verify the behavior. This is a recurring pattern in verification-only features.",
+      "isSystemic": true
     }
   ],
   "rejectedObservations": [],
-  "previousRound": null
+  "previousRound": ".factory/validation/integration-testing/scrutiny/synthesis.json"
 }
