@@ -1,11 +1,11 @@
 {
   "milestone": "layout-viewport-parity",
-  "round": 1,
-  "status": "fail",
+  "round": 2,
+  "status": "pass",
   "assertionsSummary": {
     "total": 13,
-    "passed": 11,
-    "failed": 1,
+    "passed": 12,
+    "failed": 0,
     "blocked": 1
   },
   "passedAssertions": [
@@ -17,28 +17,19 @@
     "VAL-MOBILE-001",
     "VAL-MOBILE-002",
     "VAL-MOBILE-003",
+    "VAL-MOBILE-004",
     "VAL-MOBILE-005",
     "VAL-STABLE-001",
     "VAL-STABLE-003"
   ],
-  "failedAssertions": [
-    {
-      "id": "VAL-MOBILE-004",
-      "reason": "The validation contract specifies that age filter and reroll button should be 'stacked vertically' on mobile, but the actual implementation displays the age filter options (Old, Medium, New, All) horizontally inline with the reroll button positioned below the group."
-    }
-  ],
+  "failedAssertions": [],
   "blockedAssertions": [
     {
       "id": "VAL-STABLE-002",
-      "blockedBy": "No albums in the current playable buckets (all, old, medium, new) contain runtime data. The cache only has runtime_millis for 2 albums (IDs: 498039308, 1529420801) which aren't in playable buckets. Cannot test 'with runtime' scenario."
+      "blockedBy": "No albums in playable buckets (all, old, medium, new) contain runtime_millis data. Cannot test 'with runtime' scenario."
     }
   ],
-  "appliedUpdates": [
-    {
-      "target": "user-testing.md",
-      "description": "Added Flow Validator Guidance: Browser section with isolation rules, resource boundaries, concurrency limits, and evidence requirements",
-      "source": "setup"
-    }
-  ],
-  "previousRound": null
+  "appliedUpdates": [],
+  "previousRound": ".factory/validation/layout-viewport-parity/user-testing/synthesis.json",
+  "round2Correction": "VAL-MOBILE-004 was incorrectly marked as failed in round 1 due to misreading the validation contract. The contract explicitly states 'age filter toggle displays its four options horizontally in a single row' which matches the implementation. Re-verification confirmed the age filter options are horizontal and reroll button is below, per spec."
 }
